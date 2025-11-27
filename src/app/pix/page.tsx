@@ -64,7 +64,10 @@ export default function PixPage() {
     setTxStatus(null);
 
     try {
-      // Build request payload following the provided documentation
+      // Build request payload matching BlackCat's expected schema:
+      // - amount in cents (int)
+      // - items use title/unitPrice/quantity/tangible
+      // - customer.document must be an object { type, number }
       const payload = {
         amount: cents,
         currency: "BRL",
@@ -74,20 +77,25 @@ export default function PixPage() {
         },
         items: [
           {
-            name: "Pagamento via site",
+            title: "Pagamento via site",
             quantity: 1,
-            price: cents,
+            unitPrice: cents,
+            tangible: false,
           },
         ],
         customer: {
           name,
           email,
-          document: cpf,
-          documentType: cpf && cpf.length > 11 ? "cnpj" : "cpf",
+          // document as object to satisfy "Expected object, received string"
+          document: {
+            type: cpf && cpf.length > 11 ? "cnpj" : "cpf",
+            number: cpf || undefined,
+          },
+          // keep phone as-is (string). If gateway expects structured phones we can adapt later.
           phone,
         },
         externalRef: `app_${Date.now()}`,
-        // postbackUrl could be added here if you host a webhook endpoint
+        // postbackUrl can be added here if you have a webhook endpoint
       };
 
       const res = await fetch("/api/blackcat", {
