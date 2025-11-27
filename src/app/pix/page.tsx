@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/card";
 import { Toaster as UIToaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
-import QRCode from "qrcode";
 
 type BlackcatResponse = {
   // flexible typing because gateway may return various shapes
@@ -32,7 +31,6 @@ export default function PixPage() {
   const [cpf, setCpf] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [loading, setLoading] = useState(false);
-  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [copyPaste, setCopyPaste] = useState<string | null>(null);
   const [rawResponse, setRawResponse] = useState<BlackcatResponse | null>(
     null
@@ -54,7 +52,6 @@ export default function PixPage() {
     }
 
     setLoading(true);
-    setQrDataUrl(null);
     setCopyPaste(null);
     setRawResponse(null);
 
@@ -90,12 +87,11 @@ export default function PixPage() {
         return;
       }
 
-      // Try to extract pix info
+      // Try to extract pix info (prefer explicit copy fields, then payload/emv/qr_code)
       const pix = data.pix ?? data;
-      const base64Img =
-        pix?.qrCodeBase64 ?? pix?.qr_code_base64 ?? data?.qrCodeBase64 ?? data?.qr_code_base64;
       const payloadText =
         pix?.payload ?? pix?.emv ?? pix?.qr_code ?? pix?.qrcode ?? data?.payload ?? data?.emv ?? data?.qr_code;
+
       const copytext =
         pix?.copyPaste ??
         pix?.copiaECola ??
@@ -106,19 +102,13 @@ export default function PixPage() {
         data?.copia_e_cola ??
         data?.copy;
 
-      if (base64Img) {
-        const prefix = base64Img.startsWith("data:") ? "" : "data:image/png;base64,";
-        setQrDataUrl(prefix + base64Img);
-      } else if (payloadText) {
-        const url = await QRCode.toDataURL(payloadText, { margin: 1, scale: 6 });
-        setQrDataUrl(url);
-      }
-
+      // Prefer an explicit copy-paste string; otherwise, fallback to payload/emv/qr_code if present.
       if (copytext) {
         setCopyPaste(copytext);
       } else if (payloadText) {
-        // some gateways expect the "payload" text is the copia e cola
         setCopyPaste(payloadText);
+      } else {
+        setCopyPaste(null);
       }
 
       toast.success("Transação criada (veja resultado abaixo)");
@@ -192,7 +182,7 @@ export default function PixPage() {
                     setEmail("user@example.com");
                     setCpf("");
                     setPhone("");
-                    setQrDataUrl(null);
+                    // QR not used
                     setCopyPaste(null);
                     setRawResponse(null);
                   }}
@@ -204,24 +194,21 @@ export default function PixPage() {
           </CardContent>
         </Card>
 
-        {qrDataUrl && (
+        {copyPaste && (
           <Card className="mb-4">
             <CardHeader>
-              <CardTitle>QR Code</CardTitle>
+              <CardTitle>Chave copia e cola</CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-col items-center gap-4">
-              <img src={qrDataUrl} alt="QR Code PIX" className="max-w-xs" />
-              {copyPaste && (
-                <div className="w-full">
-                  <label className="block text-sm font-medium mb-1">Chave copia e cola</label>
-                  <div className="flex gap-2">
-                    <Input value={copyPaste} readOnly />
-                    <Button onClick={() => copyToClipboard(copyPaste)} variant="secondary">
-                      Copiar
-                    </Button>
-                  </div>
+            <CardContent>
+              <div className="w-full">
+                <label className="block text-sm font-medium mb-1">Copia e cola</label>
+                <div className="flex gap-2">
+                  <Input value={copyPaste} readOnly />
+                  <Button onClick={() => copyToClipboard(copyPaste)} variant="secondary">
+                    Copiar
+                  </Button>
                 </div>
-              )}
+              </div>
             </CardContent>
             <CardFooter />
           </Card>
