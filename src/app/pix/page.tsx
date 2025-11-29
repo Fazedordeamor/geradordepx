@@ -13,7 +13,9 @@ import {
 import { Toaster as UIToaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import TypingTitle from "@/components/typing-title";
-import { ChevronDown, ChevronUp, MapPin, ShieldAlert, BadgeDollarSign } from "lucide-react";
+import { ChevronDown, ChevronUp, MapPin, ShieldAlert, BadgeDollarSign, Download, Share, X } from "lucide-react";
+import { usePwaInstall } from "@/hooks/use-pwa-install";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 // --- Types ---
 type BlackcatResponse = {
@@ -63,8 +65,27 @@ export default function PixPage() {
   const [rawResponse, setRawResponse] = useState<BlackcatResponse | null>(null);
   const [transactionId, setTransactionId] = useState<string | null>(null);
   const [txStatus, setTxStatus] = useState<string | null>(null);
+  
+  // PWA State
+  const { isInstallAvailable, promptInstall } = usePwaInstall();
+  const [showInstallPopup, setShowInstallPopup] = useState(false);
+  const [showIosInstructions, setShowIosInstructions] = useState(false);
 
   // --- Effects ---
+  useEffect(() => {
+    // Show install popup 4 seconds after login
+    if (isLoggedIn) {
+      const timer = setTimeout(() => {
+        // Only show if not already installed (checking simplistic standalone mode)
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+        if (!isStandalone) {
+          setShowInstallPopup(true);
+        }
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoggedIn]);
+
   useEffect(() => {
     // Fetch IP info on mount
     fetch('https://ipapi.co/json/')
@@ -85,6 +106,23 @@ export default function PixPage() {
     setCurrentUser(userId);
     // Add a small delay for effect
     setTimeout(() => setIsLoggedIn(true), 500);
+  };
+
+  const handleInstallClick = async () => {
+    // Check if it's iOS
+    const isIos = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    
+    if (isIos) {
+      setShowInstallPopup(false);
+      setShowIosInstructions(true);
+    } else if (isInstallAvailable) {
+      promptInstall();
+      setShowInstallPopup(false);
+    } else {
+      // Fallback for desktop or non-supported
+      toast.info("Para instalar, procure a opção 'Adicionar à tela inicial' no menu do seu navegador.");
+      setShowInstallPopup(false);
+    }
   };
 
   const parseAmountToCents = (value: string) => {
@@ -273,9 +311,11 @@ export default function PixPage() {
                 Localização aproximada: {ipInfo.city}, {ipInfo.region}
               </div>
             )}
-            <div className="text-[10px] text-red-400/80 mt-2 flex items-center gap-1">
-              <ShieldAlert className="h-3 w-3" />
-              Sempre verifique se está usando 4G para sua segurança.
+            <div className="text-[11px] mt-3 flex items-center gap-2 justify-center w-full bg-red-950/30 p-2 rounded border border-red-900/50">
+              <ShieldAlert className="h-4 w-4 text-red-500 animate-pulse" />
+              <span className="font-bold text-red-400 animate-security-flash uppercase tracking-wider">
+                Sempre verifique se está usando 4G para sua segurança.
+              </span>
             </div>
           </CardFooter>
         </Card>
@@ -283,8 +323,88 @@ export default function PixPage() {
     );
   }
 
+  // Find current user object for the name
+  const userObj = USERS.find(u => u.id === currentUser);
+
   return (
-    <div className="min-h-screen p-4 sm:p-6 text-foreground">
+    <div className="min-h-screen p-4 sm:p-6 text-foreground relative">
+      {/* Install Popup Overlay */}
+      {showInstallPopup && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-500">
+          <div className="w-full max-w-sm bg-[#1a1a1a] border border-primary/50 rounded-xl shadow-[0_0_40px_rgba(255,140,65,0.2)] overflow-hidden animate-in slide-in-from-bottom-10 duration-500">
+            <div className="p-6 relative">
+              <button 
+                onClick={() => setShowInstallPopup(false)}
+                className="absolute top-2 right-2 text-muted-foreground hover:text-white p-2"
+              >
+                <X size={20} />
+              </button>
+              
+              <div className="flex flex-col items-center text-center gap-4">
+                <div className="h-16 w-16 bg-primary/20 rounded-full flex items-center justify-center mb-2">
+                  <Download className="h-8 w-8 text-primary animate-bounce" />
+                </div>
+                
+                <h3 className="text-xl font-orbitron font-bold text-white">
+                  Instalar Aplicativo
+                </h3>
+                
+                <p className="text-sm text-gray-300">
+                  Baixe o app e facilite a emissão do pix <br/>
+                  <span className="text-primary font-bold text-lg mt-1 block">
+                    {userObj?.name} {userObj?.emoji}
+                  </span>
+                </p>
+
+                <Button 
+                  onClick={handleInstallClick}
+                  className="w-full bg-primary hover:bg-primary/90 text-white font-bold h-12 shadow-[0_0_15px_rgba(255,140,65,0.4)]"
+                >
+                  {/iPhone|iPad|iPod/i.test(navigator.userAgent) ? "Baixar Agora" : "Instalar no Android"}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* iOS Instructions Dialog */}
+      <Dialog open={showIosInstructions} onOpenChange={setShowIosInstructions}>
+        <DialogContent className="bg-[#1a1a1a] border-primary/30 text-white">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-primary font-orbitron">
+              <span className="text-2xl"></span> Como instalar no iPhone
+            </DialogTitle>
+            <DialogDescription className="text-gray-400">
+              Siga os passos abaixo para adicionar à tela de início:
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="flex items-center gap-4">
+              <div className="h-8 w-8 bg-gray-800 rounded flex items-center justify-center shrink-0">
+                <span className="font-bold">1</span>
+              </div>
+              <p>Toque no botão <span className="font-bold text-blue-400 flex items-center gap-1 inline-flex"><Share size={14} /> Compartilhar</span> na barra inferior do Safari.</p>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="h-8 w-8 bg-gray-800 rounded flex items-center justify-center shrink-0">
+                <span className="font-bold">2</span>
+              </div>
+              <p>Role para baixo e toque em <span className="font-bold text-white">"Adicionar à Tela de Início"</span>.</p>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="h-8 w-8 bg-gray-800 rounded flex items-center justify-center shrink-0">
+                <span className="font-bold">3</span>
+              </div>
+              <p>Confirme clicando em <span className="font-bold text-primary">Adicionar</span> no topo direito.</p>
+            </div>
+          </div>
+          <Button onClick={() => setShowIosInstructions(false)} variant="secondary" className="w-full">
+            Entendi
+          </Button>
+        </DialogContent>
+      </Dialog>
+
       <UIToaster />
       <div className="max-w-3xl mx-auto animate-fade-in-slow">
         <div className="flex justify-center mb-4">
@@ -296,7 +416,8 @@ export default function PixPage() {
         </div>
         <TypingTitle text="Los hermanos - Emissor de pix" className="mb-6 text-center" />
 
-        <Card className="mb-6 bg-background/80 backdrop-blur-sm border-primary/50 shadow-lg shadow-primary/5">
+        {/* Increased opacity for better visibility on matrix background */}
+        <Card className="mb-6 bg-[#0a0a0a]/95 backdrop-blur-md border-primary/50 shadow-lg shadow-primary/5">
           <CardHeader>
             <CardTitle className="font-orbitron text-center">Gerar Pagamento</CardTitle>
           </CardHeader>

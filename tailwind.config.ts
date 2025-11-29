@@ -80,6 +80,10 @@ export default {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0' }
         },
+        'security-flash': {
+          '0%, 100%': { opacity: '1', color: '#ef4444' }, // Red-500
+          '50%': { opacity: '0.5', color: '#f87171' } // Red-400
+        },
         'geometry-sway': {
           '0%': { transform: 'translate(-50%, -50%) rotate(0deg) scale(1)' },
           '50%': { transform: 'translate(-48%, -52%) rotate(12deg) scale(1.08)' },
@@ -105,6 +109,7 @@ export default {
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out',
         'blink': 'blink 1s step-end infinite',
+        'security-flash': 'security-flash 1s ease-in-out infinite',
         'geometry-sway': 'geometry-sway 20s ease-in-out infinite',
         'geometry-glide': 'geometry-glide 28s ease-in-out infinite',
        'zoom-through': 'zoom-through 2.5s cubic-bezier(0.7, 0, 0.84, 0) forwards',

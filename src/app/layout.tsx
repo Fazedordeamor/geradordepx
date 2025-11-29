@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Orbitron, Share_Tech_Mono } from "next/font/google";
 import "./globals.css";
-import PwaInstallPrompt from "@/components/pwa-install-prompt";
 import MatrixBackground from "@/components/matrix-background";
 import IntroWrapper from "@/components/intro-wrapper";
 
@@ -39,7 +38,6 @@ export default function RootLayout({
         <IntroWrapper>
           <main className="relative z-10">{children}</main>
         </IntroWrapper>
-        <PwaInstallPrompt />
       </body>
     </html>
   );
