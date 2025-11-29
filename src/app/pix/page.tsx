@@ -141,6 +141,7 @@ export default function PixPage() {
       // Cast to `any` for flexible property checks (gateway responses may use different field names)
       const mp: any = maybePayment as any;
       const copytext =
+        mp?.qrcode ??              // User specified this path
         mp?.payload ??
         mp?.payment_payload ??
         mp?.copyPaste ??
@@ -222,7 +223,7 @@ export default function PixPage() {
   };
 
   return (
-    <div className="min-h-screen p-6 bg-background text-foreground">
+    <div className="min-h-screen p-4 sm:p-6 bg-background text-foreground">
       <UIToaster />
       <div className="max-w-3xl mx-auto">
         <h1 className="text-2xl font-semibold mb-6">Gerador de PIX (Blackcat)</h1>
@@ -242,7 +243,7 @@ export default function PixPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">Nome</label>
                   <Input value={name} onChange={(e) => setName(e.target.value)} />
@@ -254,7 +255,7 @@ export default function PixPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">CPF / CNPJ</label>
                   <Input value={cpf} onChange={(e) => setCpf(e.target.value)} />

@@ -1,0 +1,26 @@
+{
+  "name": "Gerador PIX",
+  "short_name": "Gerador PIX",
+  "description": "Gerador de PIX com a gateway Blackcat",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/pix",
+  "display": "standalone",
+  "background_color": "#111827",
+  "theme_color": "#111827"
+}
