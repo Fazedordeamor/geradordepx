@@ -3,6 +3,7 @@ import { Orbitron, Share_Tech_Mono } from "next/font/google";
 import "./globals.css";
 import PwaInstallPrompt from "@/components/pwa-install-prompt";
 import MatrixBackground from "@/components/matrix-background";
+import IntroWrapper from "@/components/intro-wrapper";
 
 const orbitron = Orbitron({
   subsets: ["latin"],
@@ -35,7 +36,9 @@ export default function RootLayout({
         className={`${orbitron.variable} ${shareTechMono.variable} font-mono antialiased`}
       >
         <MatrixBackground />
-        <main className="relative z-10">{children}</main>
+        <IntroWrapper>
+          <main className="relative z-10">{children}</main>
+        </IntroWrapper>
         <PwaInstallPrompt />
       </body>
     </html>
