@@ -28,7 +28,7 @@ const MatrixBackground = () => {
     let drops = Array.from({ length: columns }, () => Math.random() * canvas.height);
 
     const draw = () => {
-      ctx.fillStyle = "rgba(6, 12, 6, 0.18)";
+      ctx.fillStyle = "rgba(4, 10, 6, 0.14)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.font = `17px var(--font-share-tech-mono, 'Share Tech Mono', monospace)`;
@@ -38,13 +38,13 @@ const MatrixBackground = () => {
         const x = i * columnWidth;
         const y = drops[i] * columnWidth;
 
-        const flicker = Math.random();
-        if (flicker > 0.92) {
-          ctx.fillStyle = "rgba(120, 255, 180, 0.85)";
-        } else if (flicker > 0.82) {
-          ctx.fillStyle = "rgba(90, 240, 160, 0.7)";
+        const choice = Math.random();
+        if (choice < 0.45) {
+          ctx.fillStyle = "rgba(120, 255, 190, 0.9)"; // vibrant green
+        } else if (choice < 0.85) {
+          ctx.fillStyle = "rgba(170, 125, 255, 0.85)"; // vivid purple
         } else {
-          ctx.fillStyle = "rgba(70, 200, 130, 0.55)";
+          ctx.fillStyle = "rgba(255, 170, 90, 0.35)"; // soft orange accent
         }
 
         ctx.fillText(char, x, y);
@@ -53,7 +53,7 @@ const MatrixBackground = () => {
           drops[i] = 0;
         }
 
-        drops[i] += 0.25 + Math.random() * 0.2;
+        drops[i] += 0.12 + Math.random() * 0.08;
       }
 
       animationRef.current = requestAnimationFrame(draw);
@@ -76,10 +76,16 @@ const MatrixBackground = () => {
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 -z-10 opacity-[0.55] pointer-events-none"
-    />
+    <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
+      <div className="absolute inset-0 opacity-45">
+        <div className="absolute top-1/2 left-1/2 w-[140vw] h-[140vw] -translate-x-1/2 -translate-y-1/2 rounded-[45%] bg-[radial-gradient(circle_at_center,rgba(255,140,65,0.22)_0%,rgba(255,140,65,0)_70%)] blur-2xl animate-geometry-sway" />
+        <div className="absolute top-1/2 left-1/2 w-[110vw] h-[110vw] -translate-x-1/2 -translate-y-1/2 border border-primary/25 rounded-[35%] rotate-6 blur-[2px] animate-geometry-glide" />
+      </div>
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 opacity-[0.78]"
+      />
+    </div>
   );
 };
 
