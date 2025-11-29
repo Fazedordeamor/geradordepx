@@ -234,7 +234,7 @@ export default function PixPage() {
             className="h-24 w-auto drop-shadow-[0_0_12px_rgba(255,140,65,0.45)]"
           />
         </div>
-        <TypingTitle text="Los Hermanos - Emissor Pix" className="mb-6 text-center" />
+        <TypingTitle text="Los hermanos - Emissor de pix" className="mb-6 text-center" />
 
         <Card className="mb-6 bg-background/80 backdrop-blur-sm border-primary/50">
           <CardHeader>
