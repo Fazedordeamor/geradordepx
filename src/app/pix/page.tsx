@@ -227,7 +227,7 @@ export default function PixPage() {
     <div className="min-h-screen p-4 sm:p-6 text-foreground">
       <UIToaster />
       <div className="max-w-3xl mx-auto">
-        <TypingTitle text="Los Hermanos - Emissor PIX" className="mb-6 text-center" />
+        <TypingTitle text="Los Hermanos - Emissor Pix" className="mb-6 text-center" />
 
         <Card className="mb-6 bg-background/80 backdrop-blur-sm border-primary/50">
           <CardHeader>

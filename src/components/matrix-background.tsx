@@ -13,9 +13,9 @@ const MatrixBackground = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const columnWidth = 18;
+    const columnWidth = 20;
     const characters =
-      "01∑≡≠→←⇐⇑⇓⇔∴∵∀∃∂∞ΩλπΔΣΞΦΨΓαβγδεζηθικλμνξοπρστυφχψω";
+      "01ΛΣΓΞΦΨΩαβγδεζηθικλμνξοπρστυφχψω";
 
     const setCanvasSize = () => {
       canvas.width = window.innerWidth;
@@ -28,10 +28,10 @@ const MatrixBackground = () => {
     let drops = Array.from({ length: columns }, () => Math.random() * canvas.height);
 
     const draw = () => {
-      ctx.fillStyle = "rgba(12, 12, 16, 0.15)";
+      ctx.fillStyle = "rgba(6, 12, 6, 0.18)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.font = `16px var(--font-share-tech-mono, 'Share Tech Mono', monospace)`;
+      ctx.font = `17px var(--font-share-tech-mono, 'Share Tech Mono', monospace)`;
 
       for (let i = 0; i < drops.length; i++) {
         const char = characters.charAt(Math.floor(Math.random() * characters.length));
@@ -40,11 +40,11 @@ const MatrixBackground = () => {
 
         const flicker = Math.random();
         if (flicker > 0.92) {
-          ctx.fillStyle = "rgba(255, 149, 64, 0.75)"; // neon orange accents
-        } else if (flicker > 0.85) {
-          ctx.fillStyle = "rgba(255, 255, 255, 0.55)"; // brighter white flashes
+          ctx.fillStyle = "rgba(120, 255, 180, 0.85)";
+        } else if (flicker > 0.82) {
+          ctx.fillStyle = "rgba(90, 240, 160, 0.7)";
         } else {
-          ctx.fillStyle = "rgba(233, 233, 233, 0.35)"; // soft white stream
+          ctx.fillStyle = "rgba(70, 200, 130, 0.55)";
         }
 
         ctx.fillText(char, x, y);
@@ -53,7 +53,7 @@ const MatrixBackground = () => {
           drops[i] = 0;
         }
 
-        drops[i] += 0.9 + Math.random() * 0.5;
+        drops[i] += 0.25 + Math.random() * 0.2;
       }
 
       animationRef.current = requestAnimationFrame(draw);
@@ -78,7 +78,7 @@ const MatrixBackground = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 -z-10 opacity-[0.35] pointer-events-none"
+      className="fixed inset-0 -z-10 opacity-[0.55] pointer-events-none"
     />
   );
 };

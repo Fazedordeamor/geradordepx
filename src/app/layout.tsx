@@ -16,7 +16,7 @@ const shareTechMono = Share_Tech_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Los Hermanos - Emissor PIX",
+  title: "Los Hermanos - Emissor Pix",
   description: "Emissor de PIX futurista com a gateway Blackcat",
   manifest: "/manifest.json",
 };
