@@ -23,8 +23,10 @@ export async function POST(req: Request) {
     return jsonResponse({ error: "Invalid JSON body" }, 400);
   }
 
-  const PUBLIC_KEY = process.env.BLACKCAT_PUBLIC_KEY;
-  const SECRET_KEY = process.env.BLACKCAT_SECRET_KEY;
+  // Temporarily hardcoding keys to ensure they are available in production.
+  // WARNING: This is not a secure practice. Keys should be in environment variables.
+  const PUBLIC_KEY = "pk_QeH6GwZYP3KPXMdRPDIC9VzFo8CDqLATI7f764w1KQxkYRtB";
+  const SECRET_KEY = "sk_jatFTlsz-CMluRfzHixO_ax-b5l9gTH2ulxu8-pujt5piFu8";
 
   if (!PUBLIC_KEY || !SECRET_KEY) {
     return jsonResponse(
