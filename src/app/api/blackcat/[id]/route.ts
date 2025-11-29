@@ -11,9 +11,9 @@ function jsonResponse(body: object, status = 200) {
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const { id } = await params;
 
   if (!id) {
     return jsonResponse({ error: "Missing transaction id in path" }, 400);
