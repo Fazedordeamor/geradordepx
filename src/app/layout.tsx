@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Orbitron, Share_Tech_Mono } from "next/font/google";
+import { Rajdhani, Share_Tech_Mono } from "next/font/google";
 import "./globals.css";
 import MatrixBackground from "@/components/matrix-background";
 import IntroWrapper from "@/components/intro-wrapper";
 
-const orbitron = Orbitron({
+const rajdhani = Rajdhani({
   subsets: ["latin"],
-  variable: "--font-orbitron",
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-rajdhani",
 });
 
 const shareTechMono = Share_Tech_Mono({
@@ -16,9 +17,14 @@ const shareTechMono = Share_Tech_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Los hermanos - Emissor de pix",
+  title: "Los Hermanos - Emissor de pix",
   description: "Emissor de PIX futurista com a gateway Blackcat",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/logo-los-hermanos.png",
+    apple: "/logo-los-hermanos.png",
+    shortcut: "/logo-los-hermanos.png",
+  },
 };
 
 export default function RootLayout({
@@ -32,7 +38,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#111827" />
       </head>
       <body
-        className={`${orbitron.variable} ${shareTechMono.variable} font-mono antialiased`}
+        className={`${rajdhani.variable} ${shareTechMono.variable} font-sans antialiased`}
       >
         <MatrixBackground />
         <IntroWrapper>
