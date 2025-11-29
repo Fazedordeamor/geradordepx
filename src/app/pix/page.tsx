@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Toaster as UIToaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
+import TypingTitle from "@/components/typing-title";
 
 type BlackcatResponse = {
   // flexible typing because gateway may return various shapes
@@ -223,14 +224,14 @@ export default function PixPage() {
   };
 
   return (
-    <div className="min-h-screen p-4 sm:p-6 bg-background text-foreground">
+    <div className="min-h-screen p-4 sm:p-6 text-foreground">
       <UIToaster />
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-2xl font-semibold mb-6">Gerador de PIX (Blackcat)</h1>
+        <TypingTitle text="Los Hermanos - Emissor PIX" className="mb-6 text-center" />
 
-        <Card className="mb-6">
+        <Card className="mb-6 bg-background/80 backdrop-blur-sm border-primary/50">
           <CardHeader>
-            <CardTitle>Gerar cobrança PIX</CardTitle>
+            <CardTitle className="font-orbitron">Gerar cobrança PIX</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -304,9 +305,9 @@ export default function PixPage() {
         </Card>
 
         {transactionId && (
-          <Card className="mb-4">
+          <Card className="mb-4 bg-background/80 backdrop-blur-sm border-primary/50">
             <CardHeader>
-              <CardTitle>Transação</CardTitle>
+              <CardTitle className="font-orbitron">Transação</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="flex items-center justify-between">
@@ -332,9 +333,9 @@ export default function PixPage() {
         )}
 
         {copyPaste && (
-          <Card className="mb-4">
+          <Card className="mb-4 bg-background/80 backdrop-blur-sm border-primary/50">
             <CardHeader>
-              <CardTitle>Chave copia e cola</CardTitle>
+              <CardTitle className="font-orbitron">Chave copia e cola</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="w-full">
@@ -352,9 +353,9 @@ export default function PixPage() {
         )}
 
         {rawResponse && (
-          <Card>
+          <Card className="bg-background/80 backdrop-blur-sm border-primary/50">
             <CardHeader>
-              <CardTitle>Resposta bruta da API</CardTitle>
+              <CardTitle className="font-orbitron">Resposta bruta da API</CardTitle>
             </CardHeader>
             <CardContent>
               <pre className="text-xs overflow-auto max-h-64">
