@@ -7,3 +7,7 @@
 [build.environment]
   # Set the Node.js version to match your local environment
   NODE_VERSION = "18"
+
+# This plugin is essential for deploying Next.js apps on Netlify
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
