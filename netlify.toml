@@ -1,0 +1,15 @@
+[build]
+  # This command is run to build your site
+  command = "npm run build"
+  # This is the directory that will be deployed
+  publish = ".next"
+
+[build.environment]
+  # Set the Node.js version to match your local environment
+  NODE_VERSION = "18"
+
+[[redirects]]
+  # Redirect all requests to the index.html for client-side routing
+  from = "/*"
+  to = "/index.html"
+  status = 200
