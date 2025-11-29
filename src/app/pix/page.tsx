@@ -227,6 +227,13 @@ export default function PixPage() {
     <div className="min-h-screen p-4 sm:p-6 text-foreground">
       <UIToaster />
       <div className="max-w-3xl mx-auto">
+        <div className="flex justify-center mb-4">
+          <img
+            src="/logo-los-hermanos.png"
+            alt="Los Hermanos Logo"
+            className="h-24 w-auto drop-shadow-[0_0_12px_rgba(255,140,65,0.45)]"
+          />
+        </div>
         <TypingTitle text="Los Hermanos - Emissor Pix" className="mb-6 text-center" />
 
         <Card className="mb-6 bg-background/80 backdrop-blur-sm border-primary/50">
