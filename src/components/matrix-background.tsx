@@ -1,64 +1,84 @@
 "use client";
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 
 const MatrixBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationRef = useRef<number | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
+    const columnWidth = 18;
+    const characters =
+      "01∑≡≠→←⇐⇑⇓⇔∴∵∀∃∂∞ΩλπΔΣΞΦΨΓαβγδεζηθικλμνξοπρστυφχψω";
 
-    const columns = Math.floor(width / 20);
-    const drops: number[] = [];
-    for (let i = 0; i < columns; i++) {
-      drops[i] = 1;
-    }
+    const setCanvasSize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
 
-    const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    setCanvasSize();
+
+    let columns = Math.floor(canvas.width / columnWidth);
+    let drops = Array.from({ length: columns }, () => Math.random() * canvas.height);
 
     const draw = () => {
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
-      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = "rgba(12, 12, 16, 0.15)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.fillStyle = 'hsl(var(--primary))'; // Use primary color for text
-      ctx.font = '15px Share Tech Mono';
+      ctx.font = `16px var(--font-share-tech-mono, 'Share Tech Mono', monospace)`;
 
       for (let i = 0; i < drops.length; i++) {
-        const text = characters.charAt(Math.floor(Math.random() * characters.length));
-        ctx.fillText(text, i * 20, drops[i] * 20);
+        const char = characters.charAt(Math.floor(Math.random() * characters.length));
+        const x = i * columnWidth;
+        const y = drops[i] * columnWidth;
 
-        if (drops[i] * 20 > height && Math.random() > 0.975) {
+        const flicker = Math.random();
+        if (flicker > 0.92) {
+          ctx.fillStyle = "rgba(255, 149, 64, 0.75)"; // neon orange accents
+        } else if (flicker > 0.85) {
+          ctx.fillStyle = "rgba(255, 255, 255, 0.55)"; // brighter white flashes
+        } else {
+          ctx.fillStyle = "rgba(233, 233, 233, 0.35)"; // soft white stream
+        }
+
+        ctx.fillText(char, x, y);
+
+        if (y > canvas.height && Math.random() > 0.975) {
           drops[i] = 0;
         }
-        drops[i]++;
+
+        drops[i] += 0.9 + Math.random() * 0.5;
       }
+
+      animationRef.current = requestAnimationFrame(draw);
     };
 
-    const interval = setInterval(draw, 33);
+    draw();
 
     const handleResize = () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+      setCanvasSize();
+      columns = Math.floor(canvas.width / columnWidth);
+      drops = Array.from({ length: columns }, () => Math.random() * canvas.height);
     };
-    window.addEventListener('resize', handleResize);
+
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      clearInterval(interval);
-      window.removeEventListener('resize', handleResize);
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
   return (
     <canvas
       ref={canvasRef}
-      className="fixed top-0 left-0 w-full h-full -z-10 opacity-30"
+      className="fixed inset-0 -z-10 opacity-[0.35] pointer-events-none"
     />
   );
 };
